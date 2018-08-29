@@ -1,4 +1,4 @@
-#This code corresponds to the paper entitled "Image Denoising using a Deep Encoder-DecoderNetwork with Skip Connections" written by Raphaël Couturier, Gilles Perrot and Michel Salomon. This paper is accepted to ICONIP 2018
+#This code corresponds to the paper entitled "Image Denoising using a Deep Encoder-DecoderNetwork with Skip Connections" written by Raphael Couturier, Gilles Perrot and Michel Salomon. This paper is accepted to ICONIP 2018
 #This code is highly inspired from the code: https://github.com/affinelayer/pix2pix-tensorflow 
 
 
@@ -207,20 +207,19 @@ def load_examples():
 def create_generator(generator_inputs, generator_outputs_channels):
     layers = []
 
-    # encoder_1: [batch, 256, 256, in_channels] => [batch, 128, 128, ngf]
+    # encoder_1: [batch, 512, 512, in_channels] => [batch, 256, 256, ngf]
     with tf.variable_scope("encoder_1"):
         output = conv(generator_inputs, a.ngf, stride=2)
         layers.append(output)
 
     layer_specs = [
-        a.ngf * 2, # encoder_2: [batch, 128, 128, ngf] => [batch, 64, 64, ngf * 2]
-        a.ngf * 4, # encoder_3: [batch, 64, 64, ngf * 2] => [batch, 32, 32, ngf * 4]
-        a.ngf * 8, # encoder_4: [batch, 32, 32, ngf * 4] => [batch, 16, 16, ngf * 8]
-        a.ngf * 8, # encoder_5: [batch, 16, 16, ngf * 8] => [batch, 8, 8, ngf * 8]
-        a.ngf * 8, # encoder_6: [batch, 8, 8, ngf * 8] => [batch, 4, 4, ngf * 8]
-        a.ngf * 8, # encoder_7: [batch, 4, 4, ngf * 8] => [batch, 2, 2, ngf * 8]
-        a.ngf * 8, # encoder_8: [batch, 2, 2, ngf * 8] => [batch, 1, 1, ngf * 8]
-#        a.ngf * 8, # encoder_8: [batch, 2, 2, ngf * 8] => [batch, 1, 1, ngf * 8]
+        a.ngf * 2, # encoder_2: [batch, 256, 256, ngf] => [batch, 128, 128, ngf * 2]
+        a.ngf * 4, # encoder_3: [batch, 128, 128, ngf * 2] => [batch, 64, 64, ngf * 4]
+        a.ngf * 8, # encoder_4: [batch, 64, 64, ngf * 4] => [batch, 32, 32, ngf * 8]
+        a.ngf * 8, # encoder_5: [batch, 32, 32, ngf * 8] => [batch, 16 16, ngf * 8]
+        a.ngf * 8, # encoder_6: [batch, 16, 16, ngf * 8] => [batch, 8, 8, ngf * 8]
+        a.ngf * 8, # encoder_7: [batch, 8, 8, ngf * 8] => [batch, 4, 4, ngf * 8]
+        a.ngf * 8, # encoder_8: [batch, 4, 4, ngf * 8] => [batch, 2, 2, ngf * 8]
     ]
 
     for out_channels in layer_specs:
@@ -233,14 +232,13 @@ def create_generator(generator_inputs, generator_outputs_channels):
             layers.append(output)
 
     layer_specs = [
-#        (a.ngf * 8, 0.5),   # decoder_8: [batch, 1, 1, ngf * 8] => [batch, 2, 2, ngf * 8 * 2]
-        (a.ngf * 8, 0.5),   # decoder_8: [batch, 1, 1, ngf * 8] => [batch, 2, 2, ngf * 8 * 2]
-        (a.ngf * 8, 0.5),   # decoder_7: [batch, 2, 2, ngf * 8 * 2] => [batch, 4, 4, ngf * 8 * 2]
-        (a.ngf * 8, 0.5),   # decoder_6: [batch, 4, 4, ngf * 8 * 2] => [batch, 8, 8, ngf * 8 * 2]
-        (a.ngf * 8, 0.0),   # decoder_5: [batch, 8, 8, ngf * 8 * 2] => [batch, 16, 16, ngf * 8 * 2]
-        (a.ngf * 4, 0.0),   # decoder_4: [batch, 16, 16, ngf * 8 * 2] => [batch, 32, 32, ngf * 4 * 2]
-        (a.ngf * 2, 0.0),   # decoder_3: [batch, 32, 32, ngf * 4 * 2] => [batch, 64, 64, ngf * 2 * 2]
-        (a.ngf, 0.0),       # decoder_2: [batch, 64, 64, ngf * 2 * 2] => [batch, 128, 128, ngf * 2]
+        (a.ngf * 8, 0.5),   # decoder_8: [batch, 2, 2, ngf * 8] => [batch, 4, 4, ngf * 8 * 2]
+        (a.ngf * 8, 0.5),   # decoder_7: [batch, 4, 4, ngf * 8 * 2] => [batch, 8, 8, ngf * 8 * 2]
+        (a.ngf * 8, 0.5),   # decoder_6: [batch, 8, 8, ngf * 8 * 2] => [batch, 16, 16, ngf * 8 * 2]
+        (a.ngf * 8, 0.0),   # decoder_5: [batch, 16, 16, ngf * 8 * 2] => [batch, 32, 32, ngf * 8 * 2]
+        (a.ngf * 4, 0.0),   # decoder_4: [batch, 32, 32, ngf * 8 * 2] => [batch, 64, 64, ngf * 4 * 2]
+        (a.ngf * 2, 0.0),   # decoder_3: [batch, 64, 64, ngf * 4 * 2] => [batch, 128, 128, ngf * 2 * 2]
+        (a.ngf, 0.0),       # decoder_2: [batch, 128, 128, ngf * 2 * 2] => [batch, 256, 256, ngf * 2]
     ]
 
     num_encoder_layers = len(layers)
@@ -264,7 +262,7 @@ def create_generator(generator_inputs, generator_outputs_channels):
 
             layers.append(output)
 
-    # decoder_1: [batch, 128, 128, ngf * 2] => [batch, 256, 256, generator_outputs_channels]
+    # decoder_1: [batch, 256, 256, ngf * 2] => [batch, 512, 512, generator_outputs_channels]
     with tf.variable_scope("decoder_1"):
         input = tf.concat([layers[-1], layers[0]], axis=3)
         rectified = tf.nn.relu(input)

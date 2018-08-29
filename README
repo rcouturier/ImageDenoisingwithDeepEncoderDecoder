@@ -1,1 +1,28 @@
-This code correspond to the paper BLABLABA
+This code corresponds to the paper entitled "Image Denoising using a Deep Encoder-DecoderNetwork with Skip Connections" written by Raphaël Couturier, Gilles Perrot and Michel Salomon. This paper is accepted to ICONIP 2018
+
+This code is highly inspired from the code: https://github.com/affinelayer/pix2pix-tensorflow
+
+Data are available here:
+https://drive.google.com/drive/folders/1xOgnY6dBTahUjqykN9HWYeCO67h_ax8S?usp=sharing
+
+Put these data into the directory data_denoise.
+These images come from the Boss steganography database.
+
+Images have been noised with the following process. First images are converted in 16bits, then a speckle L=1 is applied, values of pixels are divided by 4 and then images are converted in 8 bits.
+The matlab code to do that is in the directory data_noise.
+You can check that each file contains the original image and the noisy image.
+
+To run the training, you can run the following command:
+ python image_denoising_with_deep_encoder_decoder.py   --mode train   --output_dir results  --max_epochs 50   --input_dir data_denoise/images_speckle16_big_div4_truncated/   --which_direction BtoA
+ 
+
+It takes less than one night on a Titan X GPU (with 12GB ram)
+
+To run the testing, you can run the following command:
+ python image_denoising_with_deep_encoder_decoder.py  --mode test  --output_dir denoising   --input_dir data_denoise/images_val_speckle16_big_div4_truncated/  --checkpoint results/
+
+Outputs images are visible in denoising/images
+
+
+Of course, it is possible to change the noise. In the paper, speckle and additive white gaussian noise have been considered.
+
